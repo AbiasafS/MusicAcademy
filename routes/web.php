@@ -1,9 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CourseController;
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+//enviar directo al login 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 Route::middleware([
@@ -14,4 +19,6 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
+
+    Route::resource('courses', CourseController::class);
 });

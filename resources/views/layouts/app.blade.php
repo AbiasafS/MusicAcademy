@@ -22,6 +22,7 @@
 
         <div class="min-h-screen bg-gray-100">
             @livewire('navigation-menu')
+            <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 
             <!-- Page Heading -->
             @if (isset($header))
