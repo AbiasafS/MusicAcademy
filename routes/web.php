@@ -5,8 +5,6 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\CourseController;
 
-
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,48 +22,62 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    // Dashboard normal (NO el admin)
+    // Dashboard único → el contenido se decide en la vista según el rol
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
 });
 
 // ----------------------------------------------------------
-//  GRUPO DE RUTAS PARA EL PANEL ADMIN
+//  GRUPO DE RUTAS PARA EL PANEL ADMIN (solo admin)
 // ----------------------------------------------------------
 Route::prefix('admin')->name('admin.')->middleware([
-    
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
+    'role:admin', // 👈 Solo admin
 ])->group(function () {
-
-    // Dashboard del administrador → http://localhost:8000/admin
-    Route::get('/', function () {
-        return view('admin.dashboard');  // resources/views/admin/dashboard.blade.php
-    })->name('dashboard');
-
-    
-
-    // CRUD de Roles
     Route::resource('roles', RoleController::class)->names('roles');
-
-    // CRUD de Usuarios
     Route::resource('users', UserController::class)->names('users');
+    Route::resource('courses', CourseController::class)->names('courses');
 
-
-    Route::get('courses/assign-users', [\App\Http\Controllers\Admin\CourseController::class, 'assignUsers'])
+    Route::get('courses/assign-users', [CourseController::class, 'assignUsers'])
         ->name('courses.assign-users');
-
-    Route::post('courses/assign-users', [\App\Http\Controllers\Admin\CourseController::class, 'storeUserAssignment'])
-    ->name('courses.store-user-assignment');
-
-
-    // CRUD de Cursos
-    
-    Route::resource('courses', \App\Http\Controllers\Admin\CourseController::class)->names('courses');
-
+    Route::post('courses/assign-users', [CourseController::class, 'storeUserAssignment'])
+        ->name('courses.store-user-assignment');
 });
+
+// ----------------------------------------------------------
+//  GRUPO DE RUTAS PARA INSTRUCTORES (solo instructor)
+// ----------------------------------------------------------
+Route::prefix('instructor')->name('instructor.')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'role:instructor', // 👈 Solo instructor
+])->group(function () {
+    Route::resource('courses', CourseController::class)->names('courses');
+});
+
+// ----------------------------------------------------------
+//  GRUPO DE RUTAS PARA ESTUDIANTES (solo student)
+// ----------------------------------------------------------
+Route::prefix('student')->name('student.')->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    'role:student', // 👈 Solo student
+])->group(function () {
+    // Aquí puedes poner rutas específicas para estudiantes si lo necesitas
+});
+Route::get('/info', function () {
+    return view('student.info');
+})->name('student.info');
+
+
+// ----------------------------------------------------------
+//  LOGOUT
+// ----------------------------------------------------------
 Route::post('/logout', function () {
     Auth::guard('web')->logout();
 
@@ -74,6 +86,3 @@ Route::post('/logout', function () {
 
     return redirect('/login');
 })->middleware('auth')->name('logout');
-
-Route::get('courses/assign-users', [CourseController::class, 'assignUsers'])
-    ->name('courses.assign-users');

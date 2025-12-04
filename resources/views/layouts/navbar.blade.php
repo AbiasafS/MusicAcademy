@@ -17,40 +17,7 @@
                 </a>
             </div>
 
-            <!-- Right side -->
-            <div class="flex items-center">
-                <div class="flex items-center ml-3">
-                    @auth
-                        <div class="relative">
-                            <button type="button" class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300"
-                                id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown">
-                                <span class="sr-only">Open user menu</span>
-                                <img class="w-8 h-8 rounded-full"
-                                    src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com/api/?name=' . urlencode(Auth::user()->name) }}"
-                                    alt="user photo">
-                            </button>
-
-                            <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow"
-                                id="user-dropdown">
-                                <div class="px-4 py-3">
-                                    <span class="block text-sm text-gray-900">{{ Auth::user()->name }}</span>
-                                    <span class="block text-sm text-gray-500 truncate">{{ Auth::user()->email }}</span>
-                                </div>
-                                <ul class="py-1">
-                                    <li>
-                                        <form method="POST" action="{{ route('logout') }}">
-                                            @csrf
-                                            <button class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                                Cerrar sesión
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    @endauth
-                </div>
-            </div>
+          
         </div>
     </div>
 </nav>

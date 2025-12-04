@@ -26,3 +26,4 @@ class CourseUser extends Pivot
         return $this->belongsTo(User::class);
     }
 }
+    

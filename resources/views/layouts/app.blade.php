@@ -6,16 +6,16 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
     <script src="https://kit.fontawesome.com/96d842fa1c.js" crossorigin="anonymous"></script>
-
+    <script src="//unpkg.com/alpinejs" defer></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body class="bg-gray-100">
 
     <!-- NAVBAR -->
-    <nav class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center">
+    <nav class="bg-white border-b border-gray-200 px-4 py-3 flex justify-between items-center fixed top-0 left-0 right-0 z-50">
         <div class="flex items-center">
-            <!-- Button mobile sidebar -->
+            <!-- Mobile sidebar button -->
             <button data-drawer-target="sidebar" data-drawer-toggle="sidebar"
                     class="p-2 mr-3 text-gray-600 rounded-lg hover:bg-gray-100">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,91 +27,40 @@
             <span class="text-xl font-bold">MusicAcademy</span>
         </div>
 
-        <!-- DROPDOWN USER -->
-        <div>
-            <button id="user-menu-button" data-dropdown-toggle="user-dropdown" class="flex items-center">
-                <img class="w-9 h-9 rounded-full" src="https://www.gravatar.com/avatar?d=mp">
+        <!-- USER DROPDOWN (FUNCIONANDO) -->
+        <div class="relative" x-data="{ open: false }">
+            <button @click="open = !open"
+                class="flex items-center text-gray-700 hover:text-gray-900 focus:outline-none">
+                <span class="mr-2">{{ Auth::user()->name }}</span>
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 011.08 1.04l-4.25 4.25a.75.75 0 01-1.08 0L5.23 8.27a.75.75 0 01.02-1.06z"
+                        clip-rule="evenodd"/>
+                </svg>
             </button>
 
-            <div id="user-dropdown"
-                 class="hidden z-10 bg-white rounded-lg shadow w-44">
-                <ul class="py-2 text-sm text-gray-700">
-
-                    <li>
-                        <a href="{{ route('profile.show') }}"
-                           class="block px-4 py-2 hover:bg-gray-100">
-                            Perfil
-                        </a>
-                    </li>
-
-                    <li>
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100">
-                                Salir
-                            </button>
-                        </form>
-                    </li>
-
-                </ul>
+            <!-- Dropdown -->
+            <div x-show="open"
+                 @click.away="open = true"
+                 class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-50">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button
+                        class="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100">
+                        Cerrar sesión
+                    </button>
+                </form>
             </div>
         </div>
     </nav>
 
-    <!-- SIDEBAR -->
-    <aside id="sidebar"
-           class="fixed top-0 left-0 w-64 h-screen pt-16 bg-white border-r border-gray-200 -translate-x-full transition-transform"
-           aria-label="Sidebar">
-
-        <div class="h-full px-3 py-5 overflow-y-auto">
-
-            <ul class="space-y-2 font-medium">
-
-                <li>
-                    <a href="/dashboard"
-                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
-                        <span class="ml-3">Dashboard</span>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/admin"
-                       class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100">
-                        <span class="ml-3">Admin</span>
-                    </a>
-                </li>
-
-                <li>
-                    <button class="flex items-center p-2 w-full text-gray-900 rounded-lg hover:bg-gray-100"
-                            data-collapse-toggle="submenu-cursos">
-                        <span class="flex-1 ml-3 text-left">Cursos</span>
-                    </button>
-
-                    <ul id="submenu-cursos" class="hidden py-2 space-y-2">
-                        <li>
-                            <a href="/admin/courses"
-                               class="block p-2 pl-8 text-gray-700 hover:bg-gray-200 rounded-lg">
-                                Cursos
-                            </a>
-                        </li>
-                        <li>
-                            <a href="/admin/roles"
-                               class="block p-2 pl-8 text-gray-700 hover:bg-gray-200 rounded-lg">
-                                Roles
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-            </ul>
-        </div>
-    </aside>
-
     <!-- CONTENT -->
-    <main class="p-6 sm:ml-64 mt-16">
+    <main class="p-6 sm:ml-64 mt-20">
         {{ $slot }}
     </main>
+
     @wireUiScripts
+    <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 
 </body>
 </html>

@@ -50,12 +50,8 @@
             @endforeach
         </nav>
 
-        {{-- Acción / Botón superior --}}
-        @isset($action)
-            <div class="flex justify-end mb-4">
-                {{ $action }}
-            </div>
-        @endisset
+        <!-- dropdown -->
+         
 
         {{-- Contenido --}}
         <div class="bg-white shadow rounded p-4">
