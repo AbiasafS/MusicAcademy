@@ -11,19 +11,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     {{-- FontAwesome --}}
-    
-     <link 
+    <link 
         rel="stylesheet" 
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" 
         integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" 
         crossorigin="anonymous" 
         referrerpolicy="no-referrer" />
 
-
-
     <script src="https://kit.fontawesome.com/96d842fa1c.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-TL0J...etc" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 </head>
 
 <body class="bg-gray-100">
@@ -50,10 +45,14 @@
             @endforeach
         </nav>
 
-        <!-- dropdown -->
-         
+        {{-- ACCIONES (BOTONES COMO "NUEVO") --}}
+        @if (isset($action))
+            <div class="mb-4 flex justify-end">
+                {{ $action }}
+            </div>
+        @endif
 
-        {{-- Contenido --}}
+        {{-- CONTENIDO --}}
         <div class="bg-white shadow rounded p-4">
             {{ $slot }}
         </div>
