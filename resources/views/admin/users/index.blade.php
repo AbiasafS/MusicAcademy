@@ -4,10 +4,10 @@
 ]">
 
     <x-slot name="action">
-        <a href="{{ route('admin.users.create') }}"
-            class="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-            <i class="fa-solid fa-plus"></i> Nuevo
-        </a>
+        <x-wire-button blue href="{{ route('admin.users.create') }}">
+            <i class="fa-solid fa-plus"></i>
+            Nuevo
+        </x-wire-button>
     </x-slot>
 
     @livewire('admin.datatables.user-table')

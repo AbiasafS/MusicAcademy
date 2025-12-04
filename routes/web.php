@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CourseController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -42,11 +45,23 @@ Route::prefix('admin')->name('admin.')->middleware([
         return view('admin.dashboard');  // resources/views/admin/dashboard.blade.php
     })->name('dashboard');
 
+    
+
     // CRUD de Roles
     Route::resource('roles', RoleController::class)->names('roles');
 
     // CRUD de Usuarios
     Route::resource('users', UserController::class)->names('users');
+
+
+    Route::get('courses/assign-users', [\App\Http\Controllers\Admin\CourseController::class, 'assignUsers'])
+        ->name('courses.assign-users');
+
+    Route::post('courses/assign-users', [\App\Http\Controllers\Admin\CourseController::class, 'storeUserAssignment'])
+    ->name('courses.store-user-assignment');
+
+
+    // CRUD de Cursos
     
     Route::resource('courses', \App\Http\Controllers\Admin\CourseController::class)->names('courses');
 
@@ -59,3 +74,6 @@ Route::post('/logout', function () {
 
     return redirect('/login');
 })->middleware('auth')->name('logout');
+
+Route::get('courses/assign-users', [CourseController::class, 'assignUsers'])
+    ->name('courses.assign-users');

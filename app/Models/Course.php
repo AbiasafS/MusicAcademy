@@ -16,4 +16,11 @@ class Course extends Model
         'duration_minutes',
         'published',
     ];
+
+    // --- AGREGA ESTO ---
+    public function students()
+    {
+        // Asumiendo que tu tabla pivote se llama 'course_user'
+        return $this->belongsToMany(User::class);
+    }
 }

@@ -56,6 +56,15 @@ class RoleController extends Controller
 
     public function destroy(Role $role)
     {
+        // PROTECCIÓN: Lista de nombres de roles que NO se pueden borrar
+        // Asegúrate de escribir los nombres EXACTAMENTE como están en tu base de datos
+        $rolesProtegidos = ['Admin', 'Instructor', 'Student']; 
+
+        if (in_array($role->name, $rolesProtegidos)) {
+            return redirect()->route('admin.roles.index')
+                ->with('error', 'No es permitido eliminar los roles principales del sistema.');
+        }
+
         $role->delete();
 
         return redirect()->route('admin.roles.index')
