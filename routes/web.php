@@ -51,3 +51,11 @@ Route::prefix('admin')->name('admin.')->middleware([
     Route::resource('courses', \App\Http\Controllers\Admin\CourseController::class)->names('courses');
 
 });
+Route::post('/logout', function () {
+    Auth::guard('web')->logout();
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/login');
+})->middleware('auth')->name('logout');

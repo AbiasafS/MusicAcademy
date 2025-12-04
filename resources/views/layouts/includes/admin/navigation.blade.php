@@ -20,56 +20,63 @@
         </button>
 
         <a href="{{ route('admin.dashboard') }}" class="flex ml-2 md:mr-24">
-          <img src="{{ asset('images/logo_music.png') }}" class="h-8 mr-3" alt="Music Academy Logo">
-          <span class="self-center text-xl font-semibold whitespace-nowrap">Music Academy</span>
+          <img src="{{ asset('imagenes/unnamed.jpg') }}" class="h-8 mr-3" alt="MusicAcademy Logo">
+          <span class="self-center text-xl font-semibold whitespace-nowrap">MusicAcademy</span>
         </a>
       </div>
 
-      {{-- RIGHT: Perfil --}}
-      <div class="flex items-center">
-        <div class="ml-3 relative">
-          <x-dropdown align="right" width="48">
-            <x-slot name="trigger">
-              @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-                <button
-                  class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                  <img class="size-8 rounded-full object-cover"
-                    src="{{ Auth::user()->profile_photo_url }}"
-                    alt="{{ Auth::user()->name }}" />
+       <!-- Settings Dropdown -->
+<div class="ms-3 relative">
+    <x-dropdown align="right" width="48">
+        <x-slot name="trigger">
+            @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
+                <button class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                    <img class="size-8 rounded-full object-cover" src="{{ Auth::user()->profile_photo_url }}" alt="{{ Auth::user()->name }}" />
                 </button>
-              @else
-                <button type="button"
-                  class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 bg-white hover:text-gray-800">
-                  {{ Auth::user()->name }}
-                  <i class="fa-solid fa-chevron-down ml-2"></i>
-                </button>
-              @endif
-            </x-slot>
+            @else
+                <span class="inline-flex rounded-md">
+                    <button type="button" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
+                        {{ Auth::user()->name }}
+                        <svg class="ms-2 -me-0.5 size-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/>
+                        </svg>
+                    </button>
+                </span>
+            @endif
+        </x-slot>
 
-            <x-slot name="content">
-              <div class="block px-4 py-2 text-xs text-gray-400">
+        <x-slot name="content">
+            <!-- Account Management -->
+            <div class="block px-4 py-2 text-xs text-gray-400">
                 Administrar cuenta
-              </div>
+            </div>
 
-              <x-dropdown-link href="{{ route('profile.show') }}">
+            {{-- PERFIL dentro del ADMIN --}}
+            <x-dropdown-link href="{{ route('admin.profile.show') }}">
                 Perfil
-              </x-dropdown-link>
+            </x-dropdown-link>
 
-              <div class="border-t border-gray-200"></div>
-
-              {{-- Logout --}}
-              <form method="POST" action="{{ route('logout') }}" x-data>
-                @csrf
-                <x-dropdown-link href="{{ route('logout') }}"
-                  @click.prevent="$root.submit();">
-                  Cerrar sesión
+            @if (Laravel\Jetstream\Jetstream::hasApiFeatures())
+                <x-dropdown-link href="{{ route('api-tokens.index') }}">
+                    API Tokens
                 </x-dropdown-link>
-              </form>
-            </x-slot>
-          </x-dropdown>
-        </div>
-      </div>
+            @endif
 
+            <div class="border-t border-gray-200"></div>
+
+            <!-- Logout -->
+            <form method="POST" action="{{ route('logout') }}" x-data>
+                @csrf
+                <x-dropdown-link href="{{ route('logout') }}" @click.prevent="$root.submit();">
+                    Cerrar sesión
+                </x-dropdown-link>
+            </form>
+        </x-slot>
+    </x-dropdown>
+</div>
+
+
+     
     </div>
   </div>
 </nav>

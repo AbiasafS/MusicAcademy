@@ -19,10 +19,17 @@ $Links = [
     ],
 
     [
-        'name' => 'Cursos',
-        'icon' => 'fa-solid fa-book',
+        'name' => 'Usuarios',
+        'icon' => 'fa-solid fa-users',
         'href' => route('admin.users.index'),
         'active' => request()->routeIs('admin.users.*'),
+    ],
+
+    [
+        'name' => 'Cursos',
+        'icon' => 'fa-solid fa-book',
+        'href' => route('admin.courses.index'),
+        'active' => request()->routeIs('admin.courses.*'),
     ],
 ];
 @endphp
