@@ -12,15 +12,22 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::middleware(['web', 'auth:sanctum', config('jetstream.auth_session'), 'verified'])
-                ->prefix('admin')
-                ->name('admin.')
-                ->group(base_path('routes/admin.php'));
+
+            // Rutas protegidas para admin:
+            Route::middleware([
+                'web',
+                'auth',                       // se usa auth normal (Fortify)
+                'verified',                   // verificación email (si aplica)
+            ])
+            ->prefix('admin')
+            ->name('admin.')
+            ->group(base_path('routes/admin.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Aquí puedes agregar middleware global si lo necesitas en el futuro
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+    ->create();

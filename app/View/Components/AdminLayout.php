@@ -9,15 +9,17 @@ use Illuminate\View\Component;
 class AdminLayout extends Component
 {
     /**
-     * Create a new component instance.
+     * Title para las páginas del admin.
      */
-    public function __construct()
+    public $title;
+
+    public function __construct($title = null)
     {
-        //
+        $this->title = $title;
     }
 
     /**
-     * Get the view / contents that represent the component.
+     * Renderiza la vista principal del layout admin.
      */
     public function render(): View|Closure|string
     {
