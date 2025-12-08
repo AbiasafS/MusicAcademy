@@ -28,6 +28,15 @@ class RoleController extends Controller
             'name' => $request->name
         ]);
 
+        //SWEETALERT
+        session()->flash('swal', 
+        [
+            'icon' => 'success',
+            'title' => 'Rol creado exitosamente',
+            'timer' => 3000,
+            'text' => 'El rol ha sido creado correctamente.',
+        
+        ]);
         return redirect()->route('admin.roles.index')
             ->with('success', 'Rol creado correctamente');
     }
@@ -36,38 +45,116 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         return view('admin.roles.edit', compact('role'));
+
+         if($role->id <=4){
+            //Alerta sweetalert 2
+            session()->flash('swal', 
+            [
+                'icon' => 'error',
+                'title' => 'No se puede editar este rol',
+                'timer' => 3000,
+                'text' => 'Este rol es esencial para el sistema y no puede ser editado.',
+            
+            ]);
+            //Redireccionar a la vista de roles
+            return redirect()->route('admin.roles.index');
+        }
     }
 
 
     public function update(Request $request, Role $role)
     {
+        //restringir los primeros 4 roles fijos
+        if($role->id <=4){
+            //Alerta sweetalert 2
+            session()->flash('swal', 
+            [
+                'icon' => 'error',
+                'title' => 'No se puede editar este rol',
+                'timer' => 3000,
+                'text' => 'Este rol es esencial para el sistema y no puede ser editado.',
+            
+            ]);
+            //Redireccionar a la vista de roles
+            return redirect()->route('admin.roles.index');
+        }
         $request->validate([
             'name' => "required|unique:roles,name,{$role->id}"
         ]);
 
-        $role->update([
-            'name' => $request->name
-        ]);
+        if ($role->name === $request->name) {
+            
+            // --- SI NO HAY CAMBIOS ---
+            
+            // 3a. Manda la alerta de "información"
+            session()->flash('swal', [
+                'icon'  => 'info',
+                'title' => 'Sin cambios',
+                'text'  => 'No se detectaron modificaciones. Realiza un cambio para actualizar.',
+                'timer' => 3500,
+            ]);
 
-        return redirect()->route('admin.roles.index')
-            ->with('success', 'Rol actualizado correctamente');
+            // 3b. Redirige almismo lugar
+            return redirect()->route('admin.roles.edit', $role);
+        }
+        //Si pasa la validacion, editara el rol 
+        $role->update(['name' => $request->name]);
+
+        
+
+
+        //Alerta sweetalert 2 
+        session()->flash('swal', 
+        [
+            'icon' => 'success',
+            'title' => 'Rol actualizado exitosamente',
+            'timer' => 3000,
+            'text' => 'El rol ha sido actualizado correctamente.',
+        
+        ]);
+        
+        //Redireccionar a la vista de roles
+        return redirect()->route('admin.roles.index', $role);
     }
+    
 
 
     public function destroy(Role $role)
     {
-        // PROTECCIÓN: Lista de nombres de roles que NO se pueden borrar
-        // Asegúrate de escribir los nombres EXACTAMENTE como están en tu base de datos
-        $rolesProtegidos = ['Admin', 'Instructor', 'Student']; 
+        //confirmacion antes de eliminar el rol
+        
 
-        if (in_array($role->name, $rolesProtegidos)) {
-            return redirect()->route('admin.roles.index')
-                ->with('error', 'No es permitido eliminar los roles principales del sistema.');
+        //restringir los primeros 4 roles fijos
+        if($role->id <=4){
+            //Alerta sweetalert 2
+            session()->flash('swal', 
+            [
+                'icon' => 'error',
+                'title' => 'No se puede eliminar este rol',
+                'timer' => 3000,
+                'text' => 'Este rol es esencial para el sistema y no puede ser eliminado.',
+            
+            ]);
+            //Redireccionar a la vista de roles
+            return redirect()->route('admin.roles.index');
         }
+        //confirmacion antes de eliminar el rol
+        
 
+        //borrar el elemento
         $role->delete();
 
-        return redirect()->route('admin.roles.index')
-            ->with('success', 'Rol eliminado correctamente');
+        //Alerta sweetalert 2
+        session()->flash('swal', 
+        [
+            'icon' => 'success',
+            'title' => 'Rol eliminado exitosamente',
+            'timer' => 3000,
+            'text' => 'El rol ha sido eliminado correctamente.',
+        
+        ]);
+        //Redireccionar a la vista de roles
+        return redirect()->route('admin.roles.index');
+
     }
-}
+} 

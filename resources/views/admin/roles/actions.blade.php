@@ -7,8 +7,8 @@
     </a>
 
     {{-- Eliminar --}}
-    <form action="{{ route('admin.roles.destroy', $role) }}" method="POST"
-          onsubmit="return confirm('¿Seguro que deseas eliminar este rol?');">
+    <form class="delete-form" action="{{ route('admin.roles.destroy', $role) }}" method="POST"
+          >
         @csrf
         @method('DELETE')
         <button type="submit"
