@@ -8,7 +8,7 @@
 
     {{-- Eliminar --}}
     <form action="{{ route('admin.courses.destroy', $course) }}" method="POST"
-          onsubmit="return confirm('¿Seguro que deseas eliminar este curso?');">
+         class="delete-form">
         @csrf
         @method('DELETE')
         <button type="submit"

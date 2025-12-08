@@ -8,7 +8,7 @@
 
     {{-- Eliminar --}}
     <form action="{{ route('admin.users.destroy', $user) }}" method="POST"
-          onsubmit="return confirm('¿Seguro que deseas eliminar este usuario?');">
+          class="delete-form">
         @csrf
         @method('DELETE')
         <button type="submit"

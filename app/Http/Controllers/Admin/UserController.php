@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role; // 1. Importamos el modelo Role
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -18,76 +18,121 @@ class UserController extends Controller
     {
         return view('admin.users.create');
     }
+
     public function show(User $user)
     {
-        // 1. "load('courses')" precarga la relación para que sea más rápido.
-        // 2. Enviamos la variable $user (que ya incluye sus cursos) a la vista.
         $user->load('courses');
-        
         return view('admin.users.show', compact('user'));
     }
 
     public function edit(User $user)
     {
-        // 2. Enviamos la lista de roles a la vista
         $roles = Role::all();
+
+        // Protegemos usuarios demo
+        if (in_array($user->id, [1, 2, 3])) {
+
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'No permitido',
+                'text'  => 'No se pueden editar usuarios de demostración.',
+                'timer' => 3000
+            ]);
+
+            return redirect()->route('admin.users.index');
+        }
 
         return view('admin.users.edit', compact('user', 'roles'));
     }
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
-        // validar
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'name'     => 'required',
+            'email'    => 'required|email|unique:users',
             'password' => 'required|min:6'
         ]);
 
-        // crear y asignar a una variable $user
+        // Crear usuario
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => bcrypt($request->password)
         ]);
 
-        // Asignar el rol predefinido "Estudiante"
-        // Nota: Asegúrate de que el rol "Estudiante" exista en tu base de datos
+        // Asignar rol estudiante por defecto
         $user->assignRole('Student');
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'Usuario creado correctamente');
-    }
+        // Alerta de éxito
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Usuario creado',
+            'text'  => 'El usuario fue creado correctamente.',
+            'timer' => 3000
+        ]);
 
+        return redirect()->route('admin.users.index');
+    }
 
     public function update(Request $request, User $user)
     {
+        // Usuario demo protegido
+        if (in_array($user->id, [1, 2, 3])) {
+
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'Acción no permitida',
+                'text'  => 'No se pueden modificar usuarios de demostración.',
+                'timer' => 3000
+            ]);
+
+            return redirect()->route('admin.users.index');
+        }
+
         $request->validate([
             'name'  => 'required',
             'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
-        //proteger los primeros 3 usuarios
-        if (in_array($user->id, [1, 2, 3])) {
-            return back()->with('error', 'No es permitido modificar los usuarios de demostración.');
-        }
 
         $user->update($request->only('name', 'email'));
 
-        // 3. Sincronizamos los roles del usuario con lo que viene del formulario
+        // Actualizar roles
         $user->roles()->sync($request->roles ?? []);
 
-        return redirect()->route('admin.users.index')
-            ->with('success', 'Usuario actualizado');
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Usuario actualizado',
+            'text'  => 'Los datos del usuario se han actualizado correctamente.',
+            'timer' => 3000
+        ]);
+
+        return redirect()->route('admin.users.index');
     }
 
     public function destroy(User $user)
     {
+        // Usuario demo no se puede borrar
         if (in_array($user->id, [1, 2, 3])) {
-            return back()->with('error', 'No es permitido eliminar los usuarios de demostración.');
+
+            session()->flash('swal', [
+                'icon'  => 'error',
+                'title' => 'No permitido',
+                'text'  => 'No puedes eliminar usuarios de demostración.',
+                'timer' => 3000
+            ]);
+
+            return redirect()->route('admin.users.index');
         }
 
         $user->delete();
 
-        return back()->with('success', 'Usuario eliminado');
+        session()->flash('swal', [
+            'icon'  => 'success',
+            'title' => 'Usuario eliminado',
+            'text'  => 'El usuario fue eliminado correctamente.',
+            'timer' => 3000
+        ]);
+
+        return redirect()->route('admin.users.index');
     }
 }
